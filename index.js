@@ -137,6 +137,7 @@ const resolvers = {
         .find(node => node.name.value === 'rates')
         .selectionSet.selections
         .map(selection => selection.name.value)
+        .filter(symbol => symbol !== '__typename')
       
       return dataSources.ExchangeRatesAPI.getLatest(base, symbols)
     },
@@ -148,6 +149,7 @@ const resolvers = {
         .find(node => node.name.value === 'rates')
         .selectionSet.selections
         .map(selection => selection.name.value)
+        .filter(symbol => symbol !== '__typename')
       
       return dataSources.ExchangeRatesAPI.getDate(date, base, symbols)
     },
