@@ -1,41 +1,18 @@
+require('dotenv').config()
 const { RESTDataSource } = require('apollo-datasource-rest')
 
 module.exports = class ExchangeRatesAPI extends RESTDataSource {
   constructor() {
     super();
-    this.baseURL = 'https://api.exchangeratesapi.io'
+    this.baseURL = `https://v6.exchangerate-api.com/v6/${process.env.API_KEY}`
   }
 
-  async getLatest (base, symbols) {
-    return this.get(`/latest`, {
-      base: base,
-      symbols: symbols.join(','),
-    })
-  }
-
-  async getDate (date, base, symbols) {
-    return this.get(`/${date}`, {
-      base: base,
-      symbols: symbols.join(','),
-    })
-  }
-
-  async getHistory (start_date, end_date, base, symbols) {
-    const response = await this.get(`/history`, {
-      start_at: start_date,
-      end_at: end_date,
-      base: base,
-      symbols: symbols.join(','),
-    })
-
-    const array = []
-    for (const date in response.rates) {
-      array.push({
-        date,
-        rates: response.rates[date]
-      })
+  async getLatest (base) {
+    const data = await this.get(`/latest/${base}`)
+    return {
+      date: data.time_last_update_utc,
+      base: data.base_code,
+      rates: data.conversion_rates,
     }
-
-    return array
   }
 }
